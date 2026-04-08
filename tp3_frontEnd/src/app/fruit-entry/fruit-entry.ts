@@ -1,5 +1,6 @@
-import { Component, output } from '@angular/core';
+import { Component, output, input, effect } from '@angular/core';
 import { OrderEntry } from '../interfaces/order-entry';
+import { Fruit } from '../interfaces/fruit';
 
 @Component({
   selector: 'app-fruit-entry',
@@ -9,21 +10,25 @@ import { OrderEntry } from '../interfaces/order-entry';
 })
 export class FruitEntry {
 
-  title : string = "fruitTitle"
-  quantity = "fruitQuantity"
-  price = 10
-
+  fruitEntry = input.required<Fruit>();
 
   orderEntry : OrderEntry = {
-    fruitName : this.title,
+    fruitName : "",
     desiredQuantity : 0,
-    unitPrice : this.price
+    unitPrice : 0
   }
-
-
+  
   quantityChangedEvent = output<OrderEntry>();
   removeEvent = output<OrderEntry>();
 
+
+  constructor(){
+    effect(() => {
+      this.orderEntry.fruitName = this.fruitEntry().fruitName;
+    });
+  }
+
+  
   protected increase(){
     this.orderEntry.desiredQuantity += 1;
     this.quantityChangedEvent.emit(this.orderEntry);

@@ -4,7 +4,7 @@ import { RouterOutlet } from '@angular/router';
 
 import { FruitMarketAccessor } from './services/fruit-market-accessor';
 import { FruitEntry } from './fruit-entry/fruit-entry';
-
+import { Fruit } from './interfaces/fruit';
 
 @Component({
   selector: 'app-root',
@@ -17,14 +17,30 @@ import { FruitEntry } from './fruit-entry/fruit-entry';
 })
 export class App {
 
-  availableFruits = signal<string[]>([]);
+  availableFruits = signal<Fruit[]>([]);
 
   constructor(private fruitMarketAccessor:FruitMarketAccessor){}
 
   ngOnInit(){
     this.fruitMarketAccessor.discoverCatalog().then( (value) => {
-      this.availableFruits.set(value);
-      console.log(value)
+
+
+      value.forEach(element => {
+        this.fruitMarketAccessor.getFruit(element).then( (fruit) => {
+          
+          var newFruit : Fruit = {
+            fruitName : fruit.name,
+            price : fruit.price,
+            quantity : fruit.quantity
+          };
+
+          this.availableFruits.update(list => {
+            return [ ...list, newFruit]
+          });
+
+        })
+      });
+
     });
   }
 

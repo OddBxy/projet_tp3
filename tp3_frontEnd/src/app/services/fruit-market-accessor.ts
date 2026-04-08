@@ -45,4 +45,25 @@ export class FruitMarketAccessor {
 
     return availableFruitList;
   }
+
+
+  public async getFruit(fruitName : string) : Promise<any> {
+
+    var fruit
+
+    try {
+      fruit = await this.publicClient.readContract({
+        address: this.contractAddress,
+        abi: abi.abi,
+        functionName: 'getFruit',
+        args : [fruitName]
+      }) as string[];
+
+    } catch (error) {
+      console.log(error)
+    }
+
+    return fruit;
+
+  }
 }

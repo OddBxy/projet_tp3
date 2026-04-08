@@ -7,6 +7,6 @@
     }
 
     @for(fruit of availableFruits(); track $index ){
-        <app-fruit-entry (removeEvent)="remove($event)" (quantityChangedEvent)="quantityChanged($event)"></app-fruit-entry>
+        <app-fruit-entry [fruitEntry]="fruit" (removeEvent)="remove($event)" (quantityChangedEvent)="quantityChanged($event)"></app-fruit-entry>
     }
 </div>
