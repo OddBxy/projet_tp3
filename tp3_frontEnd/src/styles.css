@@ -1,1 +1,36 @@
 /* You can add global styles to this file, and also import other style files */
+
+*{
+    margin: 0%;
+    font-family: "Open Sans", sans-serif;
+}
+
+body { height: 100vh; }
+
+.primaryButton{
+    min-width: 30px;
+    min-height: 30px;
+
+    color: white;
+    background-color: #1076cb;
+    font-size: 1em;
+
+    padding: 5px;
+
+    border: none;
+    border-radius: 5px;
+}
+
+.secondaryButton{
+    min-width: 30px;
+    min-height: 30px;
+
+    color: white;
+    background-color: #dd0000;
+    font-size: 1em;
+
+    padding: 5px;
+
+    border: none;
+    border-radius: 5px;
+}

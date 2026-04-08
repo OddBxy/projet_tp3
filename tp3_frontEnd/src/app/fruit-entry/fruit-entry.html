@@ -1,0 +1,16 @@
+<div class="card">
+    <div class="fruitInfo">
+        <h2>{{title}}</h2>
+        <p>price : {{price}} $</p>
+        <p>quantity : {{quantity}}</p>
+    </div>
+
+
+    <div class="quantitySelector">
+        <button class="secondaryButton" (click)="this.decrease()">-</button>
+        {{this.orderEntry.desiredQuantity}}
+        <button class="primaryButton" (click)="this.increase()">+</button>
+
+    </div>
+
+</div>

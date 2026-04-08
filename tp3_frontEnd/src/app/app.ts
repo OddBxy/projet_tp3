@@ -1,16 +1,39 @@
 import { Component, signal } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
-import {CatalogExplorer} from './catalog-explorer/catalog-explorer';
+
+
+import { FruitMarketAccessor } from './services/fruit-market-accessor';
+import { FruitEntry } from './fruit-entry/fruit-entry';
+
 
 @Component({
   selector: 'app-root',
   imports: [
     RouterOutlet, 
-    CatalogExplorer,
+    FruitEntry
   ],
   templateUrl: './app.html',
   styleUrl: './app.css'
 })
 export class App {
-  protected readonly title = signal('tp3_frontEnd');
+
+  availableFruits = signal<string[]>([]);
+
+  constructor(private fruitMarketAccessor:FruitMarketAccessor){}
+
+  ngOnInit(){
+    this.fruitMarketAccessor.discoverCatalog().then( (value) => {
+      this.availableFruits.set(value);
+      console.log(value)
+    });
+  }
+
+  public remove(event : any){
+    console.log(event)
+  }
+
+  public quantityChanged(event : any){
+    console.log(event)
+  }
+
 }

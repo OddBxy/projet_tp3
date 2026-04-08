@@ -1,1 +1,12 @@
-<app-catalog-explorer></app-catalog-explorer>
+<div class="fruitExplorer">
+    @if(availableFruits().length == 0){
+        <div id="info">
+            <p>There is no fruits available!</p>
+            <p>Come back later</p>
+        </div>
+    }
+
+    @for(fruit of availableFruits(); track $index ){
+        <app-fruit-entry (removeEvent)="remove($event)" (quantityChangedEvent)="quantityChanged($event)"></app-fruit-entry>
+    }
+</div>

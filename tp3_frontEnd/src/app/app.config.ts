@@ -4,7 +4,6 @@ import { routes } from './app.routes';
 
 import { FruitMarketAccessor } from './services/fruit-market-accessor';
 
-
 export const appConfig: ApplicationConfig = {
   providers: [
     provideBrowserGlobalErrorListeners(),
