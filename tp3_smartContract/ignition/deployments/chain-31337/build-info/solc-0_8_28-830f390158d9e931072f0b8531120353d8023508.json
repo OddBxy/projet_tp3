@@ -1,0 +1,40 @@
+{
+  "_format": "hh3-sol-build-info-1",
+  "id": "solc-0_8_28-830f390158d9e931072f0b8531120353d8023508",
+  "solcVersion": "0.8.28",
+  "solcLongVersion": "0.8.28+commit.7893614a",
+  "compilerType": "solc",
+  "userSourceNameMap": {
+    "contracts/FruitMarket.sol": "project/contracts/FruitMarket.sol"
+  },
+  "input": {
+    "language": "Solidity",
+    "settings": {
+      "evmVersion": "cancun",
+      "optimizer": {
+        "enabled": true,
+        "runs": 200
+      },
+      "outputSelection": {
+        "*": {
+          "": [
+            "ast"
+          ],
+          "*": [
+            "abi",
+            "evm.bytecode",
+            "evm.deployedBytecode",
+            "evm.methodIdentifiers",
+            "metadata"
+          ]
+        }
+      },
+      "remappings": []
+    },
+    "sources": {
+      "project/contracts/FruitMarket.sol": {
+        "content": "// SPDX-License-Identifier: UNLICENSED\r\npragma solidity ^0.8.28;\r\n\r\nstruct Fruit {\r\n    string name;\r\n    uint8 price;\r\n    uint8 quantity;\r\n}\r\n\r\ncontract FruitMarket {\r\n\r\n    mapping (string => Fruit) fruitsCatalog;    //catalogue des fruits\r\n    string[] fruitsAvailableIndices;            //on ne peut pas return de mapping, donc on va utiliser aussi un tableau\r\n\r\n    event update(Fruit fruit);\r\n    event fruitBought(address sender, string fruitName, uint8 quantity);    //sert a enregistrer les tx\r\n\r\n    constructor() payable {\r\n        owner = payable(msg.sender);\r\n    }\r\n\r\n\r\n    // -------- mechanismes de securite -------- //\r\n    address payable public owner;\r\n    bool public locked;\r\n\r\n    modifier onlyOwner() {\r\n        require(msg.sender == owner, \"Only owner can access this function\");\r\n        _;\r\n    }\r\n\r\n    modifier noReentrancy() {\r\n        require(!locked, \"No reentrancy\");\r\n\r\n        locked = true;\r\n        _;\r\n        locked = false;\r\n    }\r\n    // ----------------------------------------- //\r\n\r\n\r\n    //fonction pour mettre a jour le catalogue\r\n    //utiliser pour ajouter ou modifier des informations sur un fruit\r\n    function updateCatalog(string calldata name, uint8 price, uint8 quantity) public onlyOwner {\r\n        require(!compareStrings(name, \"\"), \"updateCatalog: fruits must have names\");\r\n        require(quantity > 0, \"updateCatalog: cannot add 0 fruit\");\r\n\r\n\r\n        // lorsqu'un element inexistant d'une mapp est indexe, il est initialise avec des valeurs 0 ou \"\" par defaut\r\n        if(fruitsCatalog[name].quantity == 0){\r\n            //si c'est le cas, il faut aussi l'ajouter a la liste des references de fruit\r\n            fruitsAvailableIndices.push(name);\r\n        }\r\n\r\n        //Enrigistre les modifications dans le catalogue\r\n        Fruit memory fruit = Fruit(name, price, quantity);\r\n        fruitsCatalog[name] = fruit;\r\n\r\n        //Enregistre la transaction\r\n        emit update(fruit);\r\n    }\r\n\r\n    //foncton pour supprimer un fruit du catalogue\r\n    function removeFruit(string calldata name) public onlyOwner {\r\n        Fruit storage fruit = fruitsCatalog[name];\r\n        require(fruit.quantity > 0, \"removeFruit : fruit not in catalog\");\r\n\r\n        fruit.quantity = 0;\r\n    }\r\n\r\n\r\n    //fonction pour recuperer un fruit et ses informations\r\n    function getFruit(string calldata fruitName) public view returns (Fruit memory){\r\n        return fruitsCatalog[fruitName];\r\n    }\r\n\r\n\r\n    //fonction permettant au Dapps de decouvrir les fruits du catalogue\r\n    function getAvailableFruitsList() public view returns (string[] memory) {\r\n        return fruitsAvailableIndices;\r\n    }\r\n\r\n    //fonction pour acheter un fruit\r\n    function buyFruit(string calldata fruitName, uint8 quantity) external payable {\r\n        //reference directement les elements du catalogue avec storage et pas memory\r\n        Fruit storage wantedFruit = fruitsCatalog[fruitName];   \r\n\r\n        require(wantedFruit.quantity != 0, \"buyFruit : fruit requested not available\");\r\n        require(wantedFruit.quantity >= quantity, \"buyFruit : There is not enough fruit, cannot give you as many as requested\");\r\n\r\n        //paiement des fruits\r\n        uint cost = quantity * wantedFruit.price;\r\n        require(msg.value >= cost, \"buyFruit : insufficient funds to buy this quantity\");\r\n        pay(cost);\r\n\r\n        //mise à jours du catalogue\r\n        wantedFruit.quantity -= quantity;\r\n\r\n        //enregistre la transaction\r\n        emit fruitBought(msg.sender, fruitName, quantity);\r\n    }\r\n\r\n\r\n    //fonction de transfer d'ether vers le proprietaire du contrat\r\n    function pay(uint256 _amount) public {\r\n        (bool success,) = owner.call{value: _amount}(\"\");\r\n        require(success, \"Failed to send Ether\");\r\n    }\r\n\r\n\r\n    //fonction utilitaire pour verifier l'egalite de string\r\n    function compareStrings(string memory a, string memory b) private pure returns (bool) {\r\n        return (keccak256(abi.encodePacked((a))) == keccak256(abi.encodePacked((b))));\r\n    }\r\n\r\n}\r\n"
+      }
+    }
+  }
+}

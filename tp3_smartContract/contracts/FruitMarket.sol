@@ -1,5 +1,6 @@
 // SPDX-License-Identifier: UNLICENSED
 pragma solidity ^0.8.28;
+import "@openzeppelin/contracts/proxy/utils/Initializable.sol";
 
 struct Fruit {
     string name;
@@ -7,7 +8,7 @@ struct Fruit {
     uint8 quantity;
 }
 
-contract FruitMarket {
+contract FruitMarket is Initializable {
 
     mapping (string => Fruit) fruitsCatalog;    //catalogue des fruits
     string[] fruitsAvailableIndices;            //on ne peut pas return de mapping, donc on va utiliser aussi un tableau
@@ -15,8 +16,13 @@ contract FruitMarket {
     event update(Fruit fruit);
     event fruitBought(address sender, string fruitName, uint8 quantity);    //sert a enregistrer les tx
 
-    constructor() payable {
-        owner = payable(msg.sender);
+    // constructor() payable {
+    //     owner = payable(msg.sender);
+    // }
+
+    // les contrat deploye par proxy doivent etre initializable
+    function initialize(address _owner) public initializer {
+        owner = payable(_owner);
     }
 
 

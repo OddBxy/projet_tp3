@@ -22,6 +22,7 @@ contract FruitMarketTest is Test {
         //on simule etre l'owner pour deployer le contrat et on revient a la normal apres
         vm.startPrank(OWNER_ADDRESS);
         market = new FruitMarket();
+        market.initialize(OWNER_ADDRESS);   //le contrat doit etre initialiser car deploye par proxy
         vm.stopPrank();
     }
 
