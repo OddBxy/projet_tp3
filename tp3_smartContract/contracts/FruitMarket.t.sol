@@ -26,7 +26,7 @@ contract FruitMarketTest is Test {
     }
 
 
-    function test_addFruit() public {
+    function test_whenAddingFruit_thenFruitInfoShouldBeRetreivable() public {
         vm.startPrank(OWNER_ADDRESS);
         market.updateCatalog(ANY_FRUITNAME, ANY_PRICE, ANY_QUANTITY);
 
@@ -36,18 +36,8 @@ contract FruitMarketTest is Test {
         vm.stopPrank();
     }
 
-    function test_updateAvailableFruitsList() public {
-        vm.startPrank(OWNER_ADDRESS);
-        market.updateCatalog(ANY_FRUITNAME, ANY_PRICE, ANY_QUANTITY);
 
-        string[] memory availableFruitsList = market.getAvailableFruitsList();
-
-        require(availableFruitsList.length == 1, "given one fruit, when adding, then list of available fruit should be updated");
-        vm.stopPrank();
-    }
-
-
-    function test_updateFruit() public {
+    function test_whenUpdatingFruit_thenCatalogShouldGiveNewFruitInfo() public {
         vm.startPrank(OWNER_ADDRESS);
         Fruit memory fruitNewInfo = Fruit(ANY_FRUITNAME, 10, 10);
         market.updateCatalog(ANY_FRUITNAME, ANY_PRICE, ANY_QUANTITY);
@@ -56,13 +46,13 @@ contract FruitMarketTest is Test {
         Fruit memory fruit = market.getFruit(ANY_FRUITNAME);
         string[] memory availableFruitsList = market.getAvailableFruitsList();
 
-        require(compareFruit(fruit, fruitNewInfo), "given fruits, when update this fruit, then the market should posses the new given fruit info");
-        require(availableFruitsList.length == 1, "given fruits, when update this fruit, then list of available fruit should not be updated");
+        require(compareFruit(fruit, fruitNewInfo), "given a fruit, when updating this fruit, then the market should posses the new given fruit info");
+        require(availableFruitsList.length == 1, "given a fruit, when update this fruit, then list of available fruit should not be updated");
         vm.stopPrank();
     }
 
 
-    function test_cantAddFruitWithNoName() public {
+    function test_whenAddingFruitWithNoName_thenStateShouldBeReverted() public {
         vm.startPrank(OWNER_ADDRESS);
         vm.expectRevert("updateCatalog: fruits must have names");
 
@@ -70,7 +60,7 @@ contract FruitMarketTest is Test {
         vm.stopPrank();
     }
 
-    function test_cantAddFruitWithNoQuantity() public {
+    function test_whenAddingFruitWithNoQuantity_thenStateShouldBeReverted() public {
         vm.startPrank(OWNER_ADDRESS);
         vm.expectRevert("updateCatalog: cannot add 0 fruit");
 
@@ -79,7 +69,7 @@ contract FruitMarketTest is Test {
     }
 
 
-    function test_updateEmitsEvent() public {
+    function test_whenUpdating_shouldEmitsEvent() public {
         vm.startPrank(OWNER_ADDRESS);
         vm.expectEmit();
         emit FruitMarket.update(ANY_FRUIT);
@@ -88,7 +78,7 @@ contract FruitMarketTest is Test {
         vm.stopPrank();
     }
 
-    function test_NonOwnerCannotUpdateCatalog() public {
+    function test_whenNonOwnerTriesToUpdateCatalog_thenStateShouldBeReverted() public {
         vm.startPrank(ANY_OTHER_ADDRESS);
         vm.expectRevert("Only owner can access this function");
 
@@ -108,7 +98,7 @@ contract FruitMarketTest is Test {
     }
 
     
-    function test_nonOwnerCantRemoveFruit() public {
+    function test_whenNonOwnerTriesToRemoveFruit_thenStateShouldBeReverted() public {
         vm.startPrank(ANY_OTHER_ADDRESS);
         vm.expectRevert("Only owner can access this function");
 
@@ -129,7 +119,7 @@ contract FruitMarketTest is Test {
 
 
 
-    function test_catalogueIsUpdatedAfterPurchase() public {
+    function test_whenBuyingFruit_thenCatalogShouldBeUpdated() public {
         vm.startPrank(OWNER_ADDRESS);
         market.updateCatalog(ANY_FRUITNAME, ANY_PRICE, ANY_QUANTITY);
         vm.stopPrank();
