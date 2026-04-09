@@ -1,0 +1,33 @@
+<div id="container">
+    <div class="title">
+        <h2>Your shopping cart !</h2>
+    </div>
+    
+    <div class="body">
+        <div class="cart">
+            <div class="cartItem">
+                <p>Item</p>
+                <p>Quantity</p>
+                <p>unit price</p>
+            </div>
+            
+            @for(entry of cart.values(); track $index ){
+                <div class="cartItem">
+                    <p>{{entry.fruitName}}</p>
+                    <p>: {{entry.desiredQuantity}}</p>
+                    <p>{{entry.unitPrice}} eth</p>
+                </div>
+            }
+
+            <div>
+                total : {{total}} eth
+            </div>
+        </div>
+        
+        <button class="primaryButton" (click)="buy()">
+            Buy
+        </button>
+    </div>
+</div>
+
+

@@ -1,3 +1,5 @@
+
+
 <div class="fruitExplorer">
     @if(availableFruits().length == 0){
         <div id="info">
@@ -7,6 +9,8 @@
     }
 
     @for(fruit of availableFruits(); track $index ){
-        <app-fruit-entry [fruitEntry]="fruit" (removeEvent)="remove($event)" (quantityChangedEvent)="quantityChanged($event)"></app-fruit-entry>
+        <app-fruit-entry [fruitEntry]="fruit" (quantityChangedEvent)="quantityChanged($event)"></app-fruit-entry>
     }
 </div>
+
+<app-shopping-cart #shoppingCart (buyEvent)="buy($event)"></app-shopping-cart>
