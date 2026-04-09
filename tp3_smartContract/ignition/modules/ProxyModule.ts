@@ -1,11 +1,14 @@
 import { buildModule } from "@nomicfoundation/hardhat-ignition/modules";
 
+import dotenv from 'dotenv';
+dotenv.config();
+
 
 //MODULE DE DEPLOIMENT DU PROXY
 const proxyModule = buildModule("ProxyModule", (m) => {
     //on definit l'addresse de l'administrateur du proxy
-    //const proxyAdminOwner = `0x${env.SEPOLIA_WALLET_ADDRESS}`;
-    const proxyAdminOwner = m.getAccount(0);
+    //const proxyAdminOwner = `0x${process.env.SEPOLIA_PRIVATE_KEY}`;
+    const proxyAdminOwner = `${process.env.LOCAL_PUBLIC_KEY}`;
 
     //on recupere l'abi contrat avec lequel on souhaite interagir au travers du proxy
     const fruitMarket = m.contract("FruitMarket");

@@ -10,4 +10,17 @@ export default defineConfig({
       "@openzeppelin/contracts/proxy/transparent/TransparentUpgradeableProxy.sol",
     ],
   },
+  networks: {
+    hardhat: {
+      type: "http",
+      url : "http://127.0.0.1:8545",
+      accounts: {
+        mnemonic: "seed",
+        path: "m/44'/60'/0'/0",
+        initialIndex: 0,
+        count: 10,
+        accountsBalance: "10000000000000000000000", // 10,000 ETH
+      },
+    },
+  },
 });
