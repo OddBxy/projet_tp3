@@ -19,7 +19,8 @@
     "@angular/router": "^21.2.0",
     "rxjs": "~7.8.0",
     "tslib": "^2.3.0",
-    "viem": "^2.47.10"
+    "viem": "^2.47.10",
+    "wagmi": "^3.6.1"
   },
   "devDependencies": {
     "@angular/build": "^21.2.6",

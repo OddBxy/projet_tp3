@@ -4,6 +4,9 @@ import { createPublicClient, createWalletClient, http, parseEventLogs } from "vi
 import { privateKeyToAccount } from "viem/accounts";
 import { hardhat } from "viem/chains";
 
+import { connect, getConnection, getEnsName, injected } from '@wagmi/core'
+import { config } from '../wagmi.config'
+
 import abi from '../../contractAbi/FruitMarket.json'; 
 
 @Injectable({
@@ -25,6 +28,19 @@ export class FruitMarketAccessor {
       chain: hardhat,
       transport: this.chainAddress,
   });
+
+  
+  public async connection() : Promise<any>{
+    const address = await connect(config, {connector : injected()});
+    //disconnect = useDisconnect()
+
+    return address;
+  }
+
+  public async disconnect() {
+    await this.disconnect();
+  }
+
   
   
   public async discoverCatalog(): Promise<string[]> {

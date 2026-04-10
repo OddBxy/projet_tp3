@@ -1,0 +1,14 @@
+<div class="fruitExplorer">
+    @if(availableFruits().length == 0){
+        <div id="info">
+            <p>There is no fruits available!</p>
+            <p>Come back later</p>
+        </div>
+    }
+
+    @for(fruit of availableFruits(); track $index ){
+        <app-fruit-entry [fruitEntry]="fruit" (quantityChangedEvent)="quantityChanged($event)"></app-fruit-entry>
+    }
+</div>
+
+<app-shopping-cart #shoppingCart (buyEvent)="buy($event)"></app-shopping-cart>
