@@ -19,11 +19,11 @@ export class Login {
       if (account && account.accounts.length > 0) {
         this.router.navigate(['/buyer']);
       } else {
-        console.warn("Connexion échouée");
+        console.warn("connection failed :/");
       }
 
     }).catch(err => {
-      console.error("Erreur lors de la connexion :", err);
+      console.error("Error happened during connection :", err);
     });
   }
 }

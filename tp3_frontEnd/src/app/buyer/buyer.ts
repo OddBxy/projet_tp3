@@ -22,12 +22,15 @@ export class Buyer {
   constructor(private fruitMarketAccessor:FruitMarketAccessor){}
 
   ngOnInit(){
-    // this.fruitMarketAccessor.connection().then( (value) => {
-    //   console.log(value)
-    // });
+
+    this.getCatalog();
+  }
+
+
+  protected getCatalog(){
+    
     this.fruitMarketAccessor.discoverCatalog().then( (value) => {
-
-
+      this.availableFruits.set([])
       value.forEach(element => {
         this.fruitMarketAccessor.getFruit(element).then( (fruit) => {
           
@@ -45,14 +48,25 @@ export class Buyer {
       });
 
     });
+
   }
 
   protected quantityChanged(event : OrderEntry){
     this.shoppingCart.updateCart(event);
   }
 
-  protected buy(event : Map<string, OrderEntry>){
-    console.log(event);
+  protected async buy(event : Map<string, OrderEntry>){
+    for (const [name, entry] of event) {
+      try {
+        const receipt = await this.fruitMarketAccessor.buy(entry);
+        console.log(receipt);
+      } catch (error) {
+        console.error("Error couldnt buy :", name, error);
+      }
+    }
+
+    this.getCatalog();
+
   }
 
 

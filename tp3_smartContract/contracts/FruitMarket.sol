@@ -87,7 +87,7 @@ contract FruitMarket is Initializable {
     }
 
     //fonction pour acheter un fruit
-    function buyFruit(string calldata fruitName, uint8 quantity) external payable {
+    function buyFruit(string calldata fruitName, uint8 quantity) public payable {
         //reference directement les elements du catalogue avec storage et pas memory
         Fruit storage wantedFruit = fruitsCatalog[fruitName];   
 
