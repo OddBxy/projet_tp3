@@ -29,5 +29,6 @@ export class ShoppingCart {
 
   protected buy(){
     this.buyEvent.emit(this.cart);
+    this.cart.clear();
   }
 }

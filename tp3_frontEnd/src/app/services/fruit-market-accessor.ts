@@ -1,15 +1,17 @@
 import { Injectable, signal } from '@angular/core';
+import { BehaviorSubject, Observable } from 'rxjs';
 
-import { createPublicClient, createWalletClient, http, parseEther, parseEventLogs } from "viem";
+import { createPublicClient, createWalletClient, http, parseEther, parseEventLogs, TransactionReceipt } from "viem";
 import { privateKeyToAccount } from "viem/accounts";
 //import { hardhat } from "viem/chains";
 
-import { connect, getConnection, getEnsName, injected, switchChain, waitForTransactionReceipt, writeContract } from '@wagmi/core'
+import { connect, getConnection, getEnsName, injected, readContract, switchChain, waitForTransactionReceipt, writeContract } from '@wagmi/core'
 import { config } from '../wagmi.config'
 import { hardhat } from '@wagmi/core/chains';
 
 import abi from '../../contractAbi/FruitMarket.json'; 
 import { OrderEntry } from '../interfaces/order-entry';
+import { Fruit } from '../interfaces/fruit';
 
 @Injectable({
   providedIn: 'root',
@@ -17,6 +19,8 @@ import { OrderEntry } from '../interfaces/order-entry';
 
 
 export class FruitMarketAccessor {
+
+  availableFruits : BehaviorSubject<Fruit[]> = new BehaviorSubject<Fruit[]>([]);
 
   //adresse de la chain où le contrat est deployé 
   //chainAddress = http(process.env.SEPOLIA_RPC_URL);
@@ -37,14 +41,31 @@ export class FruitMarketAccessor {
       transport: this.chainAddress,
   });
 
-  walletAddress = signal<any>(null);
+  walletAddresses = signal<Readonly<string[]>>([]);
 
   
   public async connection() : Promise<any>{
-    const address = await connect(config, {connector : injected()});
-    this.walletAddress.set(address);
+    try{
+      const wallet = await connect(config, {connector : injected()});
 
-    return this.walletAddress();
+      // const owner = await readContract(config, {
+      //   address: this.contractAddress,
+      //   abi: abi.abi,
+      //   functionName: 'owner',
+      // })
+      // console.log("owner : ", owner)
+      // console.log("wallet : ", wallet)
+
+      if (wallet.accounts && wallet.accounts.length > 0) {
+        this.walletAddresses.set(wallet.accounts);
+        return this.walletAddresses();
+      } else {
+        throw "connection failed !";
+      }
+
+    } catch(error) {
+      throw error;
+    }  
   }
 
   public isConnected() : boolean{
@@ -60,26 +81,43 @@ export class FruitMarketAccessor {
   //   await this.disconnect();
   // }
 
-  availableFruits = signal<string[]>([]);
-  
-  
-  public async discoverCatalog(): Promise<string[]> {
 
+  unwatch = this.publicClient.watchEvent({
+    onLogs: logs => {
+      console.log(logs);
+      this.discoverCatalog();
+    }
+  });
+  
+  
+  public async discoverCatalog(): Promise<BehaviorSubject<Fruit[]>> {
 
     try {
-      const newlist = await this.publicClient.readContract({
+      var newFruitList : Fruit[] = []
+      const fruitNameList = await this.publicClient.readContract({
         address: this.contractAddress,
         abi: abi.abi,
         functionName: 'getAvailableFruitsList',
       }) as string[];
 
-      this.availableFruits.set(newlist);
+
+      const promises = fruitNameList.map(async (element) => {
+        const fruit = await this.getFruit(element);
+        return {
+          fruitName: fruit.name,
+          price: fruit.price,
+          quantity: fruit.quantity
+        } as Fruit;
+      });
+
+      const resolvedFruits = await Promise.all(promises);
+      this.availableFruits.next(resolvedFruits);
+
     } catch (error) {
-      console.log(error)
+      throw error;
     }
 
-
-    return this.availableFruits();
+    return this.availableFruits;
   }
 
 
@@ -96,7 +134,7 @@ export class FruitMarketAccessor {
       }) as string[];
 
     } catch (error) {
-      console.log(error)
+      throw error;
     }
 
     return fruit;
@@ -104,19 +142,16 @@ export class FruitMarketAccessor {
   }
 
 
-  public async buy(entry : OrderEntry) : Promise<any> {
+  public async buy(entry : OrderEntry) : Promise<TransactionReceipt> {
     console.log(abi)
     if (!this.isConnected()) {
-      console.log("error, no wallet connected !")
-      return;
+      throw "error, no wallet connected !";
     }
 
 
     try {
       const price = (entry.desiredQuantity * entry.unitPrice).toString();
 
-      await switchChain(config, { chainId: hardhat.id });
-      //Envoyer la transaction
       const hash = await writeContract(config, {
         ...this.fruitMarketConfig,
         chainId: hardhat.id,
@@ -134,7 +169,8 @@ export class FruitMarketAccessor {
       return receipt;
 
     } catch (error) {
-      console.error("Error happened during payment : ", error);
+      const detailedError = "Error happened during payment : " + error;
+      throw detailedError;
     }
   }
 }

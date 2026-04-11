@@ -16,12 +16,6 @@ export class Login {
   connect(){
     this.fruitMarketAccessor.connection().then( (account) => {
       console.log(account)
-      if (account && account.accounts.length > 0) {
-        this.router.navigate(['/buyer']);
-      } else {
-        console.warn("connection failed :/");
-      }
-
     }).catch(err => {
       console.error("Error happened during connection :", err);
     });

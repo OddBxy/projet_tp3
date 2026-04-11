@@ -4,6 +4,7 @@ import { ShoppingCart } from '../shopping-cart/shopping-cart';
 import { Fruit } from '../interfaces/fruit';
 import { OrderEntry } from '../interfaces/order-entry';
 import { FruitEntry } from '../fruit-entry/fruit-entry';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-buyer',
@@ -17,38 +18,24 @@ import { FruitEntry } from '../fruit-entry/fruit-entry';
 export class Buyer {
   
   @ViewChild('shoppingCart') shoppingCart !: ShoppingCart;
+
+  fruitSubscription : Subscription = new Subscription();
   availableFruits = signal<Fruit[]>([]);
 
   constructor(private fruitMarketAccessor:FruitMarketAccessor){}
-
   ngOnInit(){
-
     this.getCatalog();
   }
 
 
-  protected getCatalog(){
-    
-    this.fruitMarketAccessor.discoverCatalog().then( (value) => {
-      this.availableFruits.set([])
-      value.forEach(element => {
-        this.fruitMarketAccessor.getFruit(element).then( (fruit) => {
-          
-          var newFruit : Fruit = {
-            fruitName : fruit.name,
-            price : fruit.price,
-            quantity : fruit.quantity
-          };
-
-          this.availableFruits.update(list => {
-            return [ ...list, newFruit]
-          });
-
-        })
-      });
+  protected getCatalog(){    
+    this.fruitMarketAccessor.discoverCatalog().then( (resolvedPromise) => {
+      
+      this.fruitSubscription = resolvedPromise.subscribe( newFruitList => {
+        this.availableFruits.set(newFruitList);
+      })
 
     });
-
   }
 
   protected quantityChanged(event : OrderEntry){
@@ -61,14 +48,16 @@ export class Buyer {
         const receipt = await this.fruitMarketAccessor.buy(entry);
         console.log(receipt);
       } catch (error) {
-        console.error("Error couldnt buy :", name, error);
+        console.error("Error couldnt buy :", name, "\n cause : ", error);
       }
     }
-
-    this.getCatalog();
 
   }
 
 
+
+  ngOnDestroy() {
+    this.fruitSubscription?.unsubscribe();
+  }
 
 }
