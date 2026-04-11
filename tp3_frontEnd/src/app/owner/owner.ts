@@ -4,10 +4,11 @@ import { FruitMarketAccessor } from '../services/fruit-market-accessor';
 import { Fruit } from '../interfaces/fruit';
 import { FruitModifier } from './fruit-modifier/fruit-modifier';
 import { OwnerFruitEntry } from './owner-fruit-entry/owner-fruit-entry';
+import { Panel } from '../panel/panel';
 
 @Component({
   selector: 'app-owner',
-  imports: [FruitModifier, OwnerFruitEntry],
+  imports: [FruitModifier, OwnerFruitEntry, Panel],
   templateUrl: './owner.html',
   styleUrl: './owner.css',
 })
@@ -17,6 +18,9 @@ export class Owner {
 
   fruitSubscription : Subscription = new Subscription();
   availableFruits = signal<Fruit[]>([]);
+
+  showError = signal(false);
+  protected errorLogs : string = "";
 
   constructor(private fruitMarketAccessor:FruitMarketAccessor){}
   ngOnInit(){
@@ -34,7 +38,7 @@ export class Owner {
     });
   }
 
-  protected addFruit(){
+  protected addFruitPressed(){
     this.fruitModifier.fruit.update( current => current = undefined);
   }
 
@@ -42,13 +46,44 @@ export class Owner {
     this.fruitModifier.fruit.update( current => current = fruit)
   }
 
-  protected delete(fruit : Fruit){
-    this.fruitMarketAccessor.deleteFruit(fruit);
+  protected async delete(fruit : Fruit){
+    try{
+      await this.fruitMarketAccessor.deleteFruit(fruit);
+    }catch(error){
+      this.errorLogs = error as string;
+      this.toggleErrorDialog();
+    }
   }
 
-  protected updateCatalog(fruit : Fruit){
-    this.fruitMarketAccessor.updateCatalog(fruit);
+  protected async updateCatalog(fruit : Fruit){
+    try{
+      await this.fruitMarketAccessor.updateCatalog(fruit);
+    }catch(error){
+      this.errorLogs = error as string;
+      this.toggleErrorDialog();
+    }
   }
+
+
+
+
+
+
+  protected toggleErrorDialog() {
+    const dialog = document.getElementById("errorLogDialog") as HTMLDialogElement;
+    
+    if (!this.showError()) {
+      this.showError.set(true);
+      setTimeout(() => dialog.showModal(), 0); 
+    } else {
+      dialog.close();
+      this.showError.set(false);
+    }
+  }
+
+
+
+
 
   ngOnDestroy() {
     this.fruitSubscription?.unsubscribe();

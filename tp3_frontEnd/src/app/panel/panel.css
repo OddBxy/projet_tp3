@@ -1,0 +1,39 @@
+:host{
+    max-width: 1000px;
+    overflow-wrap: break-word;
+}
+
+
+#mainPanel{
+    display: grid;
+    grid-template-rows: 30px 1fr;
+    grid-template-columns: minmax(0, 1fr);
+    gap: 20px;
+    width: auto;
+    height: auto;
+    max-width: 1000px;
+    
+    border-width: 3px;
+    border-style: solid;
+    border-radius: 5px;
+    
+    background-color: white;
+    box-shadow: 5px 5px 5px rgba(0, 0, 0, 0.2);
+    
+    box-sizing: border-box;
+    padding: 10px 15px;
+}
+
+
+.header{
+    display: flex;
+    flex-direction: row-reverse;
+    max-width: 100%;
+}
+
+.content{
+    max-width: 1000px;
+    overflow-wrap: break-word;
+    word-break: break-all;
+}
+

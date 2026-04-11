@@ -38,3 +38,33 @@ body {
     border: none;
     border-radius: 5px;
 }
+
+.tertiaryButton{
+    min-width: 30px;
+    min-height: 30px;
+
+    color: #444444;
+    background-color: transparent;
+    font-size: 1em;
+
+    padding: 5px;
+
+    border: 1px solid #444444;
+    border-radius: 5px;
+}
+
+button:hover{
+    cursor :pointer;
+}
+
+
+dialog[open]{
+    display: flex;
+    min-width: 100vw;
+    min-height: 100%;
+    border: none;
+    backdrop-filter: blur(2px);
+    background: rgba(150, 150, 150, .15);
+    justify-content: space-around;
+    align-items: center;
+}

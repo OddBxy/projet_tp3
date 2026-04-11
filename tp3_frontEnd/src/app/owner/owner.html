@@ -1,6 +1,6 @@
 <div class="fruitExplorer">
 
-    <button class="primaryButton" (click)="addFruit()">
+    <button class="primaryButton" (click)="addFruitPressed()">
         Add a fruit !
     </button>
 
@@ -17,3 +17,14 @@
 </div>
 
 <app-fruit-modifier #fruitModifier (newFruitInfo)="updateCatalog($event)"></app-fruit-modifier>
+
+
+<dialog id="errorLogDialog">
+    @if(showError()){
+        <app-panel (onClose)="toggleErrorDialog()">
+            <div id="errorLogContainer" class="errorLog">
+                {{errorLogs}}
+            </div>
+        </app-panel>
+    }
+</dialog>

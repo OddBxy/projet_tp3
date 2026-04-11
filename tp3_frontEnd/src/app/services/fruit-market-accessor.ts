@@ -157,7 +157,7 @@ export class FruitMarketAccessor {
 
   public async buy(entry : OrderEntry) : Promise<TransactionReceipt> {
     if (!this.isConnected()) {
-      throw "error, no wallet connected !";
+      throw new Error("error, no wallet connected !");
     }
 
 
@@ -182,14 +182,14 @@ export class FruitMarketAccessor {
 
     } catch (error) {
       const detailedError = "Error happened during payment : " + error;
-      throw detailedError;
+      throw new Error(detailedError);
     }
   }
 
 
   public async deleteFruit(fruit : Fruit){
     if (!this.isConnected()) {
-      throw "error, no wallet connected !";
+      throw new Error("error, no wallet connected !");
     }
 
     try{
@@ -204,7 +204,7 @@ export class FruitMarketAccessor {
 
     }catch (error){
       const detailedError = "Error happened during fruit suppression : " + error;
-      throw detailedError;
+      throw new Error(detailedError);
     }
   }
 
@@ -212,7 +212,7 @@ export class FruitMarketAccessor {
 
   public async updateCatalog(fruit : Fruit){
     if (!this.isConnected()) {
-      throw "error, no wallet connected !";
+      throw new Error("error, no wallet connected !");
     }
 
     try{
@@ -228,7 +228,7 @@ export class FruitMarketAccessor {
 
     }catch (error){
       const detailedError = "Error happened during catalog's update : " + error;
-      throw detailedError;
+      throw new Error(detailedError as string);
     }
   }
 }
