@@ -1,0 +1,19 @@
+<div class="fruitExplorer">
+
+    <button class="primaryButton" (click)="addFruit()">
+        Add a fruit !
+    </button>
+
+    @if(availableFruits().length == 0){
+        <div id="info">
+            <p>There is no fruits available!</p>
+            <p>Come back later</p>
+        </div>
+    }
+
+    @for(fruit of availableFruits(); track $index ){
+        <app-owner-fruit-entry [fruitEntry]="fruit" (modifyPressed)="modify($event)" (deletePressed)="delete($event)"></app-owner-fruit-entry>
+    }
+</div>
+
+<app-fruit-modifier #fruitModifier (newFruitInfo)="updateCatalog($event)"></app-fruit-modifier>

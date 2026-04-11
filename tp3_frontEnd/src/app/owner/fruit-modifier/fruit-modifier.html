@@ -1,0 +1,41 @@
+<div id="container">
+    <div class="title">
+        @if(fruit()){
+            <h2>{{fruit()!.fruitName}} informations</h2>
+        }
+        @else{
+            <h2>Add a fruit !</h2>
+        }
+    </div>
+    
+    <div class="body">
+
+
+        <form class="fruitForm" [formGroup]="formGroup">
+            <div class="formInput">
+                <label for="name">Fruit Name: </label>
+                <input type="text" placeholder="name" formControlName="fruitName">
+            </div>
+            <div class="formInput">
+                <label for="quantity">Quantity: </label>
+                <input type="number" id="quantity" placeholder="0" formControlName="quantity">
+            </div>
+            <div class="formInput">
+                <label for="price">Pice: </label>
+                <input type="number" id="price" placeholder="0" formControlName="price">
+            </div>
+
+        </form>
+
+        
+        <button class="primaryButton" (click)="modify()">
+            Register informations
+        </button>
+
+
+
+        
+    </div>
+</div>
+
+

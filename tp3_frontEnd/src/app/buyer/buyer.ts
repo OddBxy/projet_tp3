@@ -1,6 +1,6 @@
 import { Component, signal, ViewChild } from '@angular/core';
 import { FruitMarketAccessor } from '../services/fruit-market-accessor';
-import { ShoppingCart } from '../shopping-cart/shopping-cart';
+import { ShoppingCart } from './shopping-cart/shopping-cart';
 import { Fruit } from '../interfaces/fruit';
 import { OrderEntry } from '../interfaces/order-entry';
 import { FruitEntry } from '../fruit-entry/fruit-entry';

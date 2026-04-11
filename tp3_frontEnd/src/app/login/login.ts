@@ -14,8 +14,18 @@ export class Login {
   }
 
   connect(){
-    this.fruitMarketAccessor.connection().then( (account) => {
-      console.log(account)
+    this.fruitMarketAccessor.connection().then( (walletAddresses) => {
+
+      this.fruitMarketAccessor.isWalletContractOwner(walletAddresses).then( isOwner =>{
+        if(isOwner){
+          this.router.navigate(['/owner']);
+        } 
+        else{
+          this.router.navigate(['/buyer']);
+        }
+
+      })
+
     }).catch(err => {
       console.error("Error happened during connection :", err);
     });

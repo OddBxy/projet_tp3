@@ -1,0 +1,58 @@
+:host{
+    padding : 2%;
+}
+
+#container{
+    display: flex;
+    flex-direction: column;
+
+    height: 100%;
+    border: 2px solid #a5a5a5;
+    border-radius: 10px;
+    overflow: hidden;
+
+    box-shadow: 5px 5px 2px 1px rgba(0, 0, 0, 0.5);
+}
+
+.title{
+    background-color: #a5a5a5;
+    padding: 1%;
+    margin-bottom: 10px;
+}
+
+.body{
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    height: 100%;
+    padding: 2%;
+}
+
+
+.fruitForm{
+    display: flex;
+    flex-direction: column;
+    gap : 10px;
+    height: 100%;
+}
+
+.formInput{
+    display: flex;
+    flex-direction: column;
+}
+
+#info{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    font-size: 20pt;
+    color: #444444;
+}
+
+
+button{
+    bottom: 0;
+    width: 100%;
+}

@@ -1,5 +1,5 @@
 import { Component, output } from '@angular/core';
-import { OrderEntry } from '../interfaces/order-entry';
+import { OrderEntry } from '../../interfaces/order-entry';
 
 @Component({
   selector: 'app-shopping-cart',

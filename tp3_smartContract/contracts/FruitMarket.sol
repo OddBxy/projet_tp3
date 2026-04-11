@@ -14,6 +14,7 @@ contract FruitMarket is Initializable {
     string[] fruitsAvailableIndices;            //on ne peut pas return de mapping, donc on va utiliser aussi un tableau
 
     event update(Fruit fruit);
+    event deleteFruit(string fruitName);
     event fruitBought(address sender, string fruitName, uint8 quantity);    //sert a enregistrer les tx
 
     // constructor() payable {
@@ -72,6 +73,7 @@ contract FruitMarket is Initializable {
         require(fruit.quantity > 0, "removeFruit : fruit not in catalog");
 
         fruit.quantity = 0;
+        emit deleteFruit(fruit.name);
     }
 
 

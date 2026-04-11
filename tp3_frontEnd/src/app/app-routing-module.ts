@@ -4,10 +4,12 @@ import { RouterModule, Routes } from '@angular/router';
 
 import { Buyer } from './buyer/buyer';
 import { Login } from './login/login';
+import { Owner } from './owner/owner';
 
 export const routes : Routes = [
   { path: '', component: Login },
-  { path : 'buyer', component : Buyer}
+  { path : 'buyer', component : Buyer},
+  { path : 'owner', component : Owner}
 
 ]
 

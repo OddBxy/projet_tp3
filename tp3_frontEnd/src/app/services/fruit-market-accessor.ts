@@ -48,13 +48,6 @@ export class FruitMarketAccessor {
     try{
       const wallet = await connect(config, {connector : injected()});
 
-      // const owner = await readContract(config, {
-      //   address: this.contractAddress,
-      //   abi: abi.abi,
-      //   functionName: 'owner',
-      // })
-      // console.log("owner : ", owner)
-      // console.log("wallet : ", wallet)
 
       if (wallet.accounts && wallet.accounts.length > 0) {
         this.walletAddresses.set(wallet.accounts);
@@ -66,6 +59,27 @@ export class FruitMarketAccessor {
     } catch(error) {
       throw error;
     }  
+  }
+
+  public async isWalletContractOwner(walletAddresses : string[]) : Promise<boolean>{
+    let isOwner : boolean = false;
+  
+    const owner = await readContract(config, {
+      address: this.contractAddress,
+      abi: abi.abi,
+      functionName: 'owner',
+    })
+
+    walletAddresses.forEach(address => {
+      console.log(address)
+      console.log(owner)
+      if(address == owner){
+        isOwner = true;
+      }
+    });
+
+
+    return isOwner;
   }
 
   public isConnected() : boolean{
@@ -93,7 +107,6 @@ export class FruitMarketAccessor {
   public async discoverCatalog(): Promise<BehaviorSubject<Fruit[]>> {
 
     try {
-      var newFruitList : Fruit[] = []
       const fruitNameList = await this.publicClient.readContract({
         address: this.contractAddress,
         abi: abi.abi,
@@ -143,7 +156,6 @@ export class FruitMarketAccessor {
 
 
   public async buy(entry : OrderEntry) : Promise<TransactionReceipt> {
-    console.log(abi)
     if (!this.isConnected()) {
       throw "error, no wallet connected !";
     }
@@ -170,6 +182,52 @@ export class FruitMarketAccessor {
 
     } catch (error) {
       const detailedError = "Error happened during payment : " + error;
+      throw detailedError;
+    }
+  }
+
+
+  public async deleteFruit(fruit : Fruit){
+    if (!this.isConnected()) {
+      throw "error, no wallet connected !";
+    }
+
+    try{
+      const hash = await writeContract(config, {
+        ...this.fruitMarketConfig,
+        chainId: hardhat.id,
+        functionName: 'removeFruit',
+        args: [fruit.fruitName],
+      });
+
+      console.log("Transaction envoyée, hash:", hash);
+
+    }catch (error){
+      const detailedError = "Error happened during fruit suppression : " + error;
+      throw detailedError;
+    }
+  }
+
+
+
+  public async updateCatalog(fruit : Fruit){
+    if (!this.isConnected()) {
+      throw "error, no wallet connected !";
+    }
+
+    try{
+
+      const hash = await writeContract(config, {
+        ...this.fruitMarketConfig,
+        chainId: hardhat.id,
+        functionName: 'updateCatalog',
+        args: [fruit.fruitName, fruit.price, fruit.quantity],
+      });
+
+      console.log("Transaction envoyée, hash:", hash);
+
+    }catch (error){
+      const detailedError = "Error happened during catalog's update : " + error;
       throw detailedError;
     }
   }
