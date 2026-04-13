@@ -7,8 +7,8 @@ dotenv.config();
 //MODULE DE DEPLOIMENT DU PROXY
 const proxyModule = buildModule("ProxyModule", (m) => {
     //on definit l'addresse de l'administrateur du proxy
-    //const proxyAdminOwner = `0x${process.env.SEPOLIA_PRIVATE_KEY}`;
-    const proxyAdminOwner = `${process.env.LOCAL_PUBLIC_KEY}`;
+    const proxyAdminOwner = `${process.env.SEPOLIA_PUBLIC_KEY}`;
+    //const proxyAdminOwner = `${process.env.LOCAL_PUBLIC_KEY}`;
 
     //on recupere l'abi contrat avec lequel on souhaite interagir au travers du proxy
     const fruitMarket = m.contract("FruitMarket");

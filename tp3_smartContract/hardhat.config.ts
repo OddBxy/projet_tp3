@@ -1,6 +1,11 @@
 import { defineConfig } from "hardhat/config";
 import hardhatToolboxViemPlugin from "@nomicfoundation/hardhat-toolbox-viem";
 
+
+import dotenv from 'dotenv';
+dotenv.config();
+
+
 module.exports = {
   plugins: [hardhatToolboxViemPlugin],
   solidity: {
@@ -23,5 +28,10 @@ module.exports = {
         accountsBalance: "10000000000000000000000", // 10,000 ETH
       },
     },
+    sepolia: {
+      type: "http",
+      url: process.env.SEPOLIA_RPC_URL!,
+      accounts: [`0x${process.env.SEPOLIA_PRIVATE_KEY!}`],
+    },    
   },
 };

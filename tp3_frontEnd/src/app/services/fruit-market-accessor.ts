@@ -19,16 +19,19 @@ import { Router } from '@angular/router';
 })
 
 
+
+
 export class FruitMarketAccessor {
 
   availableFruits : BehaviorSubject<Fruit[]> = new BehaviorSubject<Fruit[]>([]);
 
   //adresse de la chain où le contrat est deployé 
-  //chainAddress = http(process.env.SEPOLIA_RPC_URL);
-  chainAddress = http("http://127.0.0.1:8545");
+  //chainAddress = http("http://127.0.0.1:8545");                    //local
+  chainAddress = http("https://eth-sepolia.g.alchemy.com/v2/7Jf1XsfHnLB8Ryv_o_3tD"); //sepolia
 
   //adresse du contrat du proxy récuperer après deploy
-  contractAddress : `0x${string}` = "0xe7f1725E7734CE288F8367e1Bb143E90bb3F0512";
+  //contractAddress : `0x${string}` = "0xe7f1725E7734CE288F8367e1Bb143E90bb3F0512"; //local
+  contractAddress : `0x${string}` = "0xFbB414895E484e567D937d4Fe97Fb54AB05a112B";   //sepolia
   fruitMarketConfig = {
     address: this.contractAddress,
     abi: abi.abi,
