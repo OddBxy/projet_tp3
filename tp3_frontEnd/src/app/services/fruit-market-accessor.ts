@@ -7,7 +7,7 @@ import { privateKeyToAccount } from "viem/accounts";
 
 import { connect, disconnect, getAccount, getConnection, getEnsName, injected, readContract, switchChain, waitForTransactionReceipt, watchAccount, writeContract } from '@wagmi/core'
 import { config } from '../wagmi.config'
-import { hardhat } from '@wagmi/core/chains';
+import { hardhat, sepolia } from '@wagmi/core/chains';
 
 import abi from '../../contractAbi/FruitMarket.json'; 
 import { OrderEntry } from '../interfaces/order-entry';
@@ -185,7 +185,7 @@ export class FruitMarketAccessor {
 
       const hash = await writeContract(config, {
         ...this.fruitMarketConfig,
-        chainId: hardhat.id,
+        chainId: sepolia.id,
         functionName: 'buyFruit',
         args: [entry.fruitName, entry.desiredQuantity],
         value: parseEther(price),
@@ -214,7 +214,7 @@ export class FruitMarketAccessor {
     try{
       const hash = await writeContract(config, {
         ...this.fruitMarketConfig,
-        chainId: hardhat.id,
+        chainId: sepolia.id,
         functionName: 'removeFruit',
         args: [fruit.fruitName],
       });
@@ -238,7 +238,7 @@ export class FruitMarketAccessor {
 
       const hash = await writeContract(config, {
         ...this.fruitMarketConfig,
-        chainId: hardhat.id,
+        chainId: sepolia.id,
         functionName: 'updateCatalog',
         args: [fruit.fruitName, fruit.price, fruit.quantity],
       });
