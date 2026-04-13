@@ -1,17 +1,18 @@
-import { Injectable, signal } from '@angular/core';
+import { effect, Injectable, signal } from '@angular/core';
 import { BehaviorSubject, Observable } from 'rxjs';
 
 import { createPublicClient, createWalletClient, http, parseEther, parseEventLogs, TransactionReceipt } from "viem";
 import { privateKeyToAccount } from "viem/accounts";
 //import { hardhat } from "viem/chains";
 
-import { connect, getConnection, getEnsName, injected, readContract, switchChain, waitForTransactionReceipt, writeContract } from '@wagmi/core'
+import { connect, disconnect, getAccount, getConnection, getEnsName, injected, readContract, switchChain, waitForTransactionReceipt, watchAccount, writeContract } from '@wagmi/core'
 import { config } from '../wagmi.config'
 import { hardhat } from '@wagmi/core/chains';
 
 import abi from '../../contractAbi/FruitMarket.json'; 
 import { OrderEntry } from '../interfaces/order-entry';
 import { Fruit } from '../interfaces/fruit';
+import { Router } from '@angular/router';
 
 @Injectable({
   providedIn: 'root',
@@ -44,6 +45,14 @@ export class FruitMarketAccessor {
   walletAddresses = signal<Readonly<string[]>>([]);
 
   
+  constructor(private router: Router){
+    effect( () => {
+      if(this.walletAddresses().length == 0){
+        this.router.navigate([""]);
+      }
+    })
+  }
+
   public async connection() : Promise<any>{
     try{
       const wallet = await connect(config, {connector : injected()});
@@ -91,14 +100,21 @@ export class FruitMarketAccessor {
     return false;
   }
 
-  // public async disconnect() {
-  //   await this.disconnect();
-  // }
+  public async disconnect() {
+    try {
+      await disconnect(config);
+      this.walletAddresses.set([])
+
+    } catch (error) {
+      console.error("Erreur lors de la déconnexion:", error);
+    }
+  }
+
+
 
 
   unwatch = this.publicClient.watchEvent({
     onLogs: logs => {
-      console.log(logs);
       this.discoverCatalog();
     }
   });
