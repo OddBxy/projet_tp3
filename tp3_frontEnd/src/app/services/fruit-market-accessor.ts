@@ -30,7 +30,7 @@ export class FruitMarketAccessor {
 
   //adresse du contrat du proxy récuperer après deploy
   //contractAddress : `0x${string}` = "0xe7f1725E7734CE288F8367e1Bb143E90bb3F0512"; //local
-  contractAddress : `0x${string}` = "0xFbB414895E484e567D937d4Fe97Fb54AB05a112B";   //sepolia
+  contractAddress : `0x${string}` = "0xd84DdFaC197149116536492C9e5A31e170c9F06d";   //sepolia
   fruitMarketConfig = {
     address: this.contractAddress,
     abi: abi.abi,
