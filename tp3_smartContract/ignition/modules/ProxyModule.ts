@@ -5,7 +5,7 @@ dotenv.config();
 
 
 //MODULE DE DEPLOIMENT DU PROXY
-const proxyModule = buildModule("ProxyModule", (m) => {
+export const proxyModule = buildModule("ProxyModule", (m) => {
     //on definit l'addresse de l'administrateur du proxy
     const proxyAdminOwner = `${process.env.SEPOLIA_PUBLIC_KEY}`;
     //const proxyAdminOwner = `${process.env.LOCAL_PUBLIC_KEY}`;
@@ -45,7 +45,7 @@ const proxyModule = buildModule("ProxyModule", (m) => {
 
 
 //MODULE D'INTERACTION AVEC LE PROXY (et donc le contrat)
-const fruitMarketModule = buildModule("FruitMarketModule", (m) => {
+export const fruitMarketModule = buildModule("FruitMarketModule", (m) => {
     //recupere le contrat du proxy
     const { proxy, proxyAdmin } = m.useModule(proxyModule);
 
@@ -56,4 +56,5 @@ const fruitMarketModule = buildModule("FruitMarketModule", (m) => {
     return { fruitMarket, proxy, proxyAdmin };
 });
 
-export default fruitMarketModule
+
+export default fruitMarketModule;

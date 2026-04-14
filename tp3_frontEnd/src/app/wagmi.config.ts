@@ -1,5 +1,5 @@
 import { http, createConfig } from '@wagmi/core';
-import { mainnet, localhost, hardhat, sepolia } from '@wagmi/core/chains';
+import { hardhat, sepolia } from '@wagmi/core/chains';
 import { injected } from '@wagmi/connectors';
 
 export const config = createConfig({

@@ -43,14 +43,15 @@ export class Buyer {
   }
 
   protected async buy(event : Map<string, OrderEntry>){
-    for (const [name, entry] of event) {
-      try {
-        const receipt = await this.fruitMarketAccessor.buy(entry);
-        console.log(receipt);
-      } catch (error) {
-        console.error("Error couldnt buy :", name, "\n cause : ", error);
-      }
+    var order = Array.from(event.values());
+
+    try {
+      const receipt = await this.fruitMarketAccessor.buyList(order);
+      console.log(receipt);
+    } catch (error) {
+      console.error("Error couldnt buy :", name, "\n cause : ", error);
     }
+    
 
   }
 

@@ -3,6 +3,7 @@ import hardhatToolboxViemPlugin from "@nomicfoundation/hardhat-toolbox-viem";
 
 
 import dotenv from 'dotenv';
+import { verify } from "crypto";
 dotenv.config();
 
 
@@ -34,4 +35,9 @@ module.exports = {
       accounts: [`0x${process.env.SEPOLIA_PRIVATE_KEY!}`],
     },    
   },
+  verify : {
+    etherscan : {
+      apiKey : process.env.ETHERSCAN_API_KEY
+    }
+  }
 };

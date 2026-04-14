@@ -2,14 +2,13 @@ import { effect, Injectable, signal } from '@angular/core';
 import { BehaviorSubject, Observable } from 'rxjs';
 
 import { createPublicClient, createWalletClient, http, parseEther, parseEventLogs, TransactionReceipt } from "viem";
-import { privateKeyToAccount } from "viem/accounts";
-//import { hardhat } from "viem/chains";
+
 
 import { connect, disconnect, getAccount, getConnection, getEnsName, injected, readContract, switchChain, waitForTransactionReceipt, watchAccount, writeContract } from '@wagmi/core'
 import { config } from '../wagmi.config'
 import { hardhat, sepolia } from '@wagmi/core/chains';
 
-import abi from '../../contractAbi/FruitMarket.json'; 
+import abi from '../../contractAbi/FruitMarketV2.json'; 
 import { OrderEntry } from '../interfaces/order-entry';
 import { Fruit } from '../interfaces/fruit';
 import { Router } from '@angular/router';
@@ -41,7 +40,7 @@ export class FruitMarketAccessor {
 
   //client publique (ne peux pas faire de tx, mais peut lire ce qui est exposé par le contrat, c'est du readOnly)
   publicClient = createPublicClient({
-      chain: hardhat,
+      chain: sepolia,
       transport: this.chainAddress,
   });
 
@@ -62,6 +61,7 @@ export class FruitMarketAccessor {
 
 
       if (wallet.accounts && wallet.accounts.length > 0) {
+        await switchChain(config, { chainId: sepolia.id });
         this.walletAddresses.set(wallet.accounts);
         return this.walletAddresses();
       } else {
@@ -204,6 +204,47 @@ export class FruitMarketAccessor {
       throw new Error(detailedError);
     }
   }
+
+
+  public async buyList(orderEntryList : OrderEntry[]) : Promise<TransactionReceipt> {
+    if (!this.isConnected()) {
+      throw new Error("error, no wallet connected !");
+    }
+
+
+    try {
+      var totalPrice = 0;
+      var order : any[] = [];
+
+      (orderEntryList as OrderEntry[]).forEach(entry => {
+        totalPrice += entry.unitPrice * entry.desiredQuantity;
+        order.push({"name" : entry.fruitName, "quantity" : entry.desiredQuantity});
+      });
+
+      const hash = await writeContract(config, {
+        ...this.fruitMarketConfig,
+        chainId: sepolia.id,
+        functionName: 'buyFruitList',
+        args: [order],
+        value: parseEther(totalPrice.toString()),
+      });
+
+      console.log("Transaction envoyée, hash:", hash);
+
+      //Attendre la confirmation
+      const receipt = await waitForTransactionReceipt(config, { hash });
+      console.log("Transaction confirmée !", receipt);
+
+      return receipt;
+
+    } catch (error) {
+      const detailedError = "Error happened during payment : " + error;
+      throw new Error(detailedError);
+    }
+  }
+
+
+
 
 
   public async deleteFruit(fruit : Fruit){
